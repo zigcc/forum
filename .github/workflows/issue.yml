@@ -1,0 +1,43 @@
+name: Created Notification
+
+on:
+  issues:
+    types: [opened]
+  discussion:
+    types: [created]
+
+jobs:
+  notify-on-issue-created:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create Issue Post
+        if: github.event_name == 'issues'
+        uses: jiacai2050/telegraph-action@v1
+        id: telegraph-issue
+        with:
+          token: ${{ secrets.TELEGRAPH_TOKEN }}
+          author-name: "ZigCC Team"
+          title: "${{ github.event.issue.title }}"
+          author-url: "${{ github.event.issue.html_url }}"
+          md-body: |
+            ${{ github.event.issue.body }}
+
+      - name: Create Discussion Post
+        if: github.event_name == 'discussion'
+        uses: jiacai2050/telegraph-action@v1
+        id: telegraph-discussion
+        with:
+          token: ${{ secrets.TELEGRAPH_TOKEN }}
+          author-name: "ZigCC Team"
+          title: "${{ github.event.discussion.title }}"
+          author-url: "${{ github.event.discussion.html_url }}"
+          md-body: |
+            ${{ github.event.discussion.body }}
+
+      - name: Send Telegram Message
+        uses: jiacai2050/telegram-action@v1
+        with:
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          chat-id: "@zig_cc"
+          message: "${{ steps.telegraph-issue.outputs.url || steps.telegraph-discussion.outputs.url }}"

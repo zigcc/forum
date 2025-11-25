@@ -17,10 +17,12 @@ jobs:
         id: telegraph-issue
         with:
           token: ${{ secrets.TELEGRAPH_TOKEN }}
+          telegram-token: ${{ secrets.TELEGRAM_TOKEN }}
+          chat-id: "@zig_cc"
           author-name: "ZigCC Team"
           title: "${{ github.event.issue.title }}"
           author-url: "${{ github.event.issue.html_url }}"
-          md-body: |
+          body: |
             ${{ github.event.issue.body }}
 
       - name: Create Discussion Post
@@ -29,15 +31,15 @@ jobs:
         id: telegraph-discussion
         with:
           token: ${{ secrets.TELEGRAPH_TOKEN }}
+          telegram-token: ${{ secrets.TELEGRAM_TOKEN }}
+          chat-id: "@zig_cc"
           author-name: "ZigCC Team"
           title: "${{ github.event.discussion.title }}"
           author-url: "${{ github.event.discussion.html_url }}"
-          md-body: |
+          body: |
             ${{ github.event.discussion.body }}
 
-      - name: Send Telegram Message
-        uses: jiacai2050/telegram-action@v1
-        with:
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          chat-id: "@zig_cc"
-          message: "${{ steps.telegraph-issue.outputs.url || steps.telegraph-discussion.outputs.url }}"
+      # - name: Send Telegram Message
+      #   uses: jiacai2050/telegram-action@v1
+      #   with:
+      #     message: "${{ steps.telegraph-issue.outputs.url || steps.telegraph-discussion.outputs.url }}"

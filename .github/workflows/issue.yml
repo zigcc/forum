@@ -23,7 +23,7 @@ jobs:
           title: "${{ github.event.issue.title }}"
           author-url: "${{ github.event.issue.html_url }}"
           body: |
-            ${{ github.event.issue.html_url }}
+            > 文章链接：${{ github.event.issue.html_url }}
             
             ${{ github.event.issue.body }}
 
@@ -39,7 +39,7 @@ jobs:
           title: "${{ github.event.discussion.title }}"
           author-url: "${{ github.event.discussion.html_url }}"
           body: |
-            ${{ github.event.discussion.html_url }}
+            > 文章链接：${{ github.event.discussion.html_url }}
             
             ${{ github.event.discussion.body }}
 

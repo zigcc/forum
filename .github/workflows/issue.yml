@@ -23,6 +23,8 @@ jobs:
           title: "${{ github.event.issue.title }}"
           author-url: "${{ github.event.issue.html_url }}"
           body: |
+            ${{ github.event.issue.html_url }}
+            
             ${{ github.event.issue.body }}
 
       - name: Create Discussion Post
@@ -37,6 +39,8 @@ jobs:
           title: "${{ github.event.discussion.title }}"
           author-url: "${{ github.event.discussion.html_url }}"
           body: |
+            ${{ github.event.discussion.html_url }}
+            
             ${{ github.event.discussion.body }}
 
       # - name: Send Telegram Message

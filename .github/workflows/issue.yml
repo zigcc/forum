@@ -24,7 +24,7 @@ jobs:
           author-url: "${{ github.event.issue.html_url }}"
           body: |
             > 文章链接：${{ github.event.issue.html_url }}
-            
+
             ${{ github.event.issue.body }}
 
       - name: Create Discussion Post
@@ -40,8 +40,31 @@ jobs:
           author-url: "${{ github.event.discussion.html_url }}"
           body: |
             > 文章链接：${{ github.event.discussion.html_url }}
-            
+
             ${{ github.event.discussion.body }}
+
+      - name: Install pandoc
+        if: github.event_name == 'issues'
+        uses: pandoc/actions/setup@v1
+      - name: Prepare Email Body
+        if: github.event_name == 'issues'
+        run: |
+          pandoc -f markdown -t html -o email_body.html <<EOF
+          > 文章链接：${{ github.event.issue.html_url }}
+
+          ${{ github.event.issue.body }}
+          EOF
+      - name: Send Email
+        if: github.event_name == 'issues'
+        uses: jiacai2050/sendemail-action@v1
+        with:
+          smtp_url: 'smtps://smtp.gmail.com:465'
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          from: 'ZigCC Team <jiacai2050@gmail.com>'
+          to: "zigcc@googlegroups.com"
+          subject: "${{ github.event.issue.title }}"
+          html_body_file: email_body.html
 
       # - name: Send Telegram Message
       #   uses: jiacai2050/telegram-action@v1

@@ -50,13 +50,13 @@ jobs:
         if: github.event_name == 'issues'
         run: |
           pandoc -f markdown -t html -o email_body.html <<EOF
-          > 文章链接：${{ github.event.issue.html_url }}
+          > 原文链接：${{ github.event.issue.html_url }}
 
           ${{ github.event.issue.body }}
           EOF
       - name: Send Email
         if: github.event_name == 'issues'
-        uses: jiacai2050/sendemail-action@v1
+        uses: jiacai2050/sendmail-action@v1
         with:
           smtp_url: 'smtps://smtp.gmail.com:465'
           username: ${{ secrets.MAIL_USERNAME }}

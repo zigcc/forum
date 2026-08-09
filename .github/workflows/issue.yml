@@ -48,11 +48,13 @@ jobs:
         uses: pandoc/actions/setup@v1
       - name: Prepare Email Body
         if: github.event_name == 'issues'
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
           pandoc -f markdown -t html -o email_body.html <<EOF
           > 原文链接：${{ github.event.issue.html_url }}
 
-          ${{ github.event.issue.body }}
+          $ISSUE_BODY
           EOF
       - name: Send Email
         if: github.event_name == 'issues'

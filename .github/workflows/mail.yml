@@ -1,0 +1,34 @@
+name: Mail notification
+
+on:
+  issues:
+    types: [opened]
+  discussion:
+    types: [created]
+
+jobs:
+  send-mail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Install pandoc
+        uses: pandoc/actions/setup@v1
+      - name: Prepare Email Body
+        env:
+          BODY: ${{ github.event.issue.body || github.event.discussion.body }}
+        run: |
+          pandoc -f markdown -t html -o email_body.html <<EOF
+          > 原文链接：${{ github.event.issue.html_url || github.event.discussion.html_url }}
+
+          $BODY
+          EOF
+      - name: Send Email
+        uses: jiacai2050/sendmail-action@v1
+        with:
+          smtp_url: 'smtps://smtp.gmail.com:465'
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          from: 'ZigCC Forum <jiacai2050@gmail.com>'
+          to: "zigcc@googlegroups.com"
+          subject: "${{ github.event.issue.title || github.event.discussion.title }}"
+          html_body_file: email_body.html

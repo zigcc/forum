@@ -1,4 +1,4 @@
-name: Created Notification
+name:  Telegram notification
 
 on:
   issues:
@@ -7,7 +7,7 @@ on:
     types: [created]
 
 jobs:
-  notify-on-issue-created:
+  send-telegram:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -42,31 +42,6 @@ jobs:
             > 文章链接：${{ github.event.discussion.html_url }}
 
             ${{ github.event.discussion.body }}
-
-      - name: Install pandoc
-        if: github.event_name == 'issues'
-        uses: pandoc/actions/setup@v1
-      - name: Prepare Email Body
-        if: github.event_name == 'issues'
-        env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
-        run: |
-          pandoc -f markdown -t html -o email_body.html <<EOF
-          > 原文链接：${{ github.event.issue.html_url }}
-
-          $ISSUE_BODY
-          EOF
-      - name: Send Email
-        if: github.event_name == 'issues'
-        uses: jiacai2050/sendmail-action@v1
-        with:
-          smtp_url: 'smtps://smtp.gmail.com:465'
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          from: 'ZigCC Team <jiacai2050@gmail.com>'
-          to: "zigcc@googlegroups.com"
-          subject: "${{ github.event.issue.title }}"
-          html_body_file: email_body.html
 
       # - name: Send Telegram Message
       #   uses: jiacai2050/telegram-action@v1
